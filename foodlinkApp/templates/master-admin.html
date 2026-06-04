@@ -11,6 +11,14 @@
 <body style="background: #0f172a; color: white;"> <nav class="navbar" style="background: rgba(15, 23, 42, 0.9);">
     <div class="nav-container">
       <a href="{% url 'home' %}" class="nav-logo" style="color: white;"><i data-lucide="shield" style="color: #f59e0b;"></i><span>FoodLink Admin</span></a>
+      
+      <input type="checkbox" id="nav-check" class="nav-checkbox">
+      <label for="nav-check" class="nav-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+      
       <div class="nav-links"><a href="{% url 'home' %}" style="color: #94a3b8;">Exit System</a></div>
     </div>
   </nav>

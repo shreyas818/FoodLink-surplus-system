@@ -18,6 +18,14 @@
         <i data-lucide="heart" class="heart-icon"></i>
         <span>FoodLink</span>
       </a>
+      
+      <input type="checkbox" id="nav-check" class="nav-checkbox">
+      <label for="nav-check" class="nav-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </label>
+      
       <div class="nav-links">
         <a href="{% url 'home' %}" class="active-link">Home</a>
         <a href="{% url 'about' %}">About</a>
@@ -32,9 +40,9 @@
           <a href="{% url 'volunteer' %}">Volunteer</a>
         {% endif %}
         {% if user.is_authenticated %}
-          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Login</a>
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
         {% else %}
-          <a href="{% url 'login' %}" class="btn-login">Logout</a>
+          <a href="{% url 'login' %}" class="btn-login">Login</a>
         {% endif %}
       </div>
     </div>
