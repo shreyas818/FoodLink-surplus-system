@@ -1,0 +1,343 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Dashboard — FoodLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  
+  <style>
+    /* Premium override declarations for Dashboard Layout */
+    body {
+      background-color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .dash-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.03em;
+    }
+    
+    .dash-header p.sub-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dash-header p.sub-text::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+
+    /* Live broadcast network pipeline animation */
+    @keyframes pulse {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    /* Select element arrow design */
+    .select-wrapper::after {
+      content: '\e9ab'; /* lucide chevron-down substitute or standard down arrow */
+      font-family: sans-serif;
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header Component -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo">
+        <i data-lucide="heart" class="heart-icon"></i>
+        <span>FoodLink</span>
+      </a>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if not user.is_authenticated or user.role == 'DONOR' %}
+          <a href="{% url 'donor-dashboard' %}" class="active-link">Donor Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'NGO' %}
+          <a href="{% url 'ngo-dashboard' %}">NGO Partner</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
+          <a href="{% url 'volunteer' %}">Volunteer</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Dashboard Container -->
+  <main class="container dashboard-layout" style="margin-top: 2rem;">
+    
+    <!-- Dashboard Heading and Action CTA -->
+    <div class="dash-header animation-fade-in" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+      <div>
+       
+  <h2>Welcome Back, {{ user.first_name }}!</h2>
+          <p class="sub-text">Here's your impact dashboard and live donation </p>
+      </div>
+      
+      <button class="btn btn-saffron hover-lift" style="display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; padding: 0.9rem 1.75rem; border-radius: 1rem;" onclick="toggleModal(true)">
+        <i data-lucide="plus-circle"></i> List Surplus Supply
+      </button>
+    </div>
+
+    <!-- Beautiful Dashboard Stats cards Grid -->
+    <div class="stats-grid animation-slide-up" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3.5rem;">
+      
+      <!-- Total Rescued Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid var(--primary); background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper p-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #ecfdf5; color: var(--primary);">
+          <i data-lucide="package"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Total Rescued</h4>
+          <p style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">{{ total_rescued }}</p>
+        </div>
+      </div>
+
+      <!-- Impact Rank Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid var(--secondary); background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper s-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #fff7ed; color: var(--secondary);">
+          <i data-lucide="trending-up"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Impact Rank</h4>
+          <p style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">{{ impact_rank }}</p>
+        </div>
+      </div>
+
+      <!-- Active Pickups Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid #3b82f6; background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper b-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #eff6ff; color: #3b82f6;">
+          <i data-lucide="clock"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Active Pickups</h4>
+          <p style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">{{ active_pickups }}</p>
+        </div>
+      </div>
+
+      <!-- Partner NGOs Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid #10b981; background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper g-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #f0fdf4; color: #10b981;">
+          <i data-lucide="check-circle-2"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Partner NGOs</h4>
+          <p style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">{{ partner_ngos }}</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Broadcast Network pipeline section -->
+    <div class="active-tracker-section animation-slide-up">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h3 style="font-family: 'Outfit'; font-size: 1.5rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em;">
+          <span class="live-dot"></span>
+          Live Broadcast Network Pipeline
+        </h3>
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); background: rgba(0,0,0,0.04); padding: 0.4rem 0.8rem; border-radius: 20px;">Real-Time Streams</span>
+      </div>
+
+      <div class="donation-pipeline-list">
+        {% for item in donations %}
+          <!-- Pipeline Row Card -->
+          <div class="pipeline-row-card hover-lift" style="background: white; border-radius: 1.25rem; padding: 1.5rem 2rem; border: 1px solid rgba(15, 23, 42, 0.04); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01); display: flex; justify-content: space-between; align-items: center; transition: var(--transition-smooth); margin-bottom: 1.25rem;">
+            <div class="pipeline-main-info" style="display: flex; align-items: center; gap: 1.5rem;">
+              <div class="icon-indicator" style="width: 50px; height: 50px; background: rgba(5, 150, 105, 0.08); color: var(--primary); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                <i data-lucide="utensils"></i>
+              </div>
+              <div>
+                <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); text-transform: capitalize;">{{ item.food_type }}</h4>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+                  Quantity: <strong style="color: var(--text-dark);">{{ item.quantity_kg }} kg</strong> &nbsp;•&nbsp; 
+                  Broadcasted <span style="font-weight: 500; color: var(--text-dark);">{{ item.created_at|timesince }} ago</span>
+                </p>
+              </div>
+            </div>
+            
+            <div class="pipeline-status" style="display: flex; align-items: center; gap: 1.5rem;">
+              <span class="status-tag" style="padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; 
+                {% if item.status == 'LISTED' %}
+                  background: rgba(14, 165, 233, 0.12); color: #0284c7;
+                {% elif item.status == 'ASSIGNED' %}
+                  background: rgba(245, 158, 11, 0.12); color: #d97706;
+                {% else %}
+                  background: rgba(16, 185, 129, 0.12); color: #059669;
+                {% endif %}">
+                {{ item.get_status_display }}
+              </span>
+              <span class="expiry-tag" style="display: flex; align-items: center; gap: 0.4rem; color: #ef4444; font-size: 0.85rem; font-weight: 700; background: rgba(239, 68, 68, 0.08); padding: 0.4rem 0.8rem; border-radius: 10px;">
+                <i data-lucide="hourglass" style="width: 14px; height: 14px;"></i> {{ item.expiry_hours }}
+              </span>
+              <form method="POST" action="{% url 'delete-donation' item.id %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this listing?');">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: #94a3b8; cursor: pointer; padding: 0.5rem; display: flex; align-items: center; justify-content: center; transition: var(--transition-smooth);" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#94a3b8'">
+                  <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        {% empty %}
+          <!-- Empty State -->
+          <div class="empty-state-box" style="text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 1.5rem; border: 2px dashed rgba(15, 23, 42, 0.08); color: var(--text-muted);">
+            <i data-lucide="cloud-off" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1.25rem;"></i>
+            <p style="font-weight: 600; font-size: 1rem;">No active broadcasts listed.</p>
+            <p style="font-size: 0.85rem; margin-top: 0.25rem;">Broadcast a surplus package above to register it on the local pipeline.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+
+  <!-- Interactive Listing Form Dialog Modal -->
+  <div id="formModal" class="modal-backdrop hidden" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; transition: opacity 0.3s ease;">
+    <div class="modal-box" style="background: #ffffff; padding: 3rem 2.5rem; border-radius: 2rem; max-width: 500px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid rgba(0,0,0,0.05); position: relative;">
+      
+      <!-- Modal Close Button -->
+      <button onclick="toggleModal(false)" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(0,0,0,0.03); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: var(--transition-smooth);" onmouseover="this.style.background='rgba(0,0,0,0.08)';" onmouseout="this.style.background='rgba(0,0,0,0.03)';">
+        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+      </button>
+
+      <!-- Modal Title -->
+      <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text-dark); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i data-lucide="plus-circle" style="color: var(--primary);"></i> List Surplus Supply
+      </h3>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 2rem;">Help route food quickly by listing quantity & packaging details.</p>
+      
+      <!-- Listing Form -->
+      <form class="styled-form" method="POST" action="{% url 'donor-dashboard' %}">
+        {% csrf_token %}
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;">Food Description</label>
+          <input type="text" name="food_type" placeholder="Details (e.g. 50 Packs of Veg Rice)" style="width: 100%; padding: 1rem; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; border-radius: 1rem; font-size: 0.95rem; outline: none; transition: var(--transition-smooth);" onfocus="this.style.borderColor='var(--primary)'; this.style.background='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(5,150,105,0.1)';" onblur="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.background='#f8fafc'; this.style.boxShadow='none';" required>
+        </div>
+        
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;">Quantity (in Kilograms)</label>
+          <input type="number" name="quantity_kg" placeholder="Estimated Weight in kg" style="width: 100%; padding: 1rem; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; border-radius: 1rem; font-size: 0.95rem; outline: none; transition: var(--transition-smooth);" onfocus="this.style.borderColor='var(--primary)'; this.style.background='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(5,150,105,0.1)';" onblur="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.background='#f8fafc'; this.style.boxShadow='none';" required>
+        </div>
+        
+        <div style="margin-bottom: 1.75rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;">Shelf-Life / Expiration Time</label>
+          <div style="position: relative;">
+            <select name="expiry_hours" style="width: 100%; padding: 1rem; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; border-radius: 1rem; font-size: 0.95rem; appearance: none; outline: none; transition: var(--transition-smooth); cursor: pointer;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(5,150,105,0.1)';" onblur="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.background='#f8fafc'; this.style.boxShadow='none';">
+              <option value="Next 2 Hours">Expires in 2 Hours</option>
+              <option value="Next 4 Hours">Expires in 4 Hours</option>
+              <option value="Next 8 Hours">Expires in 8 Hours</option>
+              <option value="Next 12 Hours">Expires in 12 Hours</option>
+              <option value="Next 24 Hours">Expires in 24 Hours</option>  
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-saffron w-full" style="justify-content: center; padding: 1rem; border-radius: 1rem; font-weight: 700; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.25);">
+          Broadcast Surplus Supply
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Strategic Footer Component -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand-block">
+        <a href="{% url 'home' %}" class="footer-logo">
+          <i data-lucide="heart" class="heart-icon"></i>
+          <span>FoodLink</span>
+        </a>
+        <p class="footer-mission-statement">
+          Eliminating food waste and ensuring food security across local communities through real-time donation matching and volunteer transport.
+        </p>
+        <div class="footer-social-row">
+          <a href="#" class="social-link-icon"><i data-lucide="twitter"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="facebook"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="instagram"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'about' %}">About Us</a>
+          <a href="{% url 'contact' %}">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          <a href="{% url 'volunteer' %}">Volunteer Portal</a>
+        </div>
+        <div class="footer-column">
+          <h4>Contact & Info</h4>
+          <div class="footer-info-text"><i data-lucide="mail"></i> info@foodlink.org</div>
+          <div class="footer-info-text"><i data-lucide="phone"></i> +91 80 4920 1234</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="bottom-bar-content">
+        <div>&copy; 2026 FoodLink Association. All rights reserved.</div>
+        <div class="fssai-compliance-tag">
+          <i data-lucide="shield-check"></i>
+          <span>FSSAI Compliant Operations</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleModal(show) {
+      const modal = document.getElementById('formModal');
+      if (show) {
+        modal.classList.remove('hidden');
+        modal.style.opacity = '1';
+      } else {
+        modal.classList.add('hidden');
+        modal.style.opacity = '0';
+      }
+    }
+    lucide.createIcons();
+  </script>
+</body>
+</html>

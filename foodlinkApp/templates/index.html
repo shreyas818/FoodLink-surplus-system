@@ -1,0 +1,760 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodLink — Bridge the Gap Between Excess and Need</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+  <!-- Navigation Header Component -->
+  <nav class="navbar animate-fade-in">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo">
+        <i data-lucide="heart" class="heart-icon"></i>
+        <span>FoodLink</span>
+      </a>
+      <div class="nav-links">
+        <a href="{% url 'home' %}" class="active-link">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if not user.is_authenticated or user.role == 'DONOR' %}
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'NGO' %}
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
+          <a href="{% url 'volunteer' %}">Volunteer</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Login</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login">Logout</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Landing Hero Section -->
+    <section class="hero">
+      <div class="hero-bg animate-fade-in">
+        <img src="{% static 'images/hero-bg.jpeg' %}" alt="Food Rescue Background">
+      </div>
+      <div class="hero-content" style="background: rgba(6, 78, 59, 0.3); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 3.5rem 2.5rem; border-radius: 2rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); max-width: 820px; margin: 0 auto; z-index: 10; position: relative;">
+        <span class="badge animate-pulse-slow" style="background: rgba(16, 185, 129, 0.25); color: #34d399; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.4);">Rescuing Meals, Feeding Hope</span>
+        <h1 class="animate-slide-up delay-1" style="font-size: 3.5rem; font-weight: 800; text-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 1rem;">Share the Surplus,<br>Feed the Community</h1>
+        <p class="explanation-paragraph animate-slide-up delay-2" style="font-size: 1.15rem; line-height: 1.7; color: rgba(255,255,255,0.95) !important; text-shadow: 0 2px 8px rgba(0,0,0,0.5); margin-bottom: 2rem !important; max-width: 720px; margin: 1.5rem auto;">
+          Nearly 40% of fresh food is wasted while millions face daily food insecurity. <strong>FoodLink</strong> is a real-time coordination platform that instantly matches surplus meals from local restaurants, caterers, and events with nearby transport volunteers and verified NGOs.
+        </p>
+        <div class="hero-actions animate-slide-up delay-3">
+          <a href="{% url 'donor-dashboard' %}" class="btn btn-saffron hover-lift" style="box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);">
+            <i data-lucide="plus-circle"></i> Donate Surplus
+          </a>
+          <a href="{% url 'volunteer' %}" class="btn btn-outline hover-lift" style="border: 2px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.05);">
+            <i data-lucide="truck"></i> Volunteer to Ride
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Landing Statistics Grid Section -->
+    <section class="stats-counter container">
+      <div class="stat-mini-card hover-lift delay-1">
+        <div class="stat-icon-wrapper p-bg">
+          <i data-lucide="utensils"></i>
+        </div>
+        <h3>154K+</h3>
+        <p>Kg Rescued</p>
+      </div>
+      <div class="stat-mini-card hover-lift delay-2">
+        <div class="stat-icon-wrapper s-bg">
+          <i data-lucide="building-2"></i>
+        </div>
+        <h3>140+</h3>
+        <p>NGO Partners</p>
+      </div>
+      <div class="stat-mini-card hover-lift delay-3">
+        <div class="stat-icon-wrapper b-bg">
+          <i data-lucide="users"></i>
+        </div>
+        <h3>620+</h3>
+        <p>Active Volunteers</p>
+      </div>
+      <div class="stat-mini-card hover-lift delay-4">
+        <div class="stat-icon-wrapper g-bg">
+          <i data-lucide="heart-handshake"></i>
+        </div>
+        <h3>1.2M+</h3>
+        <p>Meals Served</p>
+      </div>
+    </section>
+
+    <!-- Showcase Grid Section -->
+    <section class="showcase-grid-section container">
+      <div class="section-header" style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; color: var(--text-dark); margin-bottom: 1rem;">How FoodLink Works</h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.05rem;">Our real-time coordination dashboard ensures fresh surplus food is picked up and distributed safely within hours.</p>
+      </div>
+
+      <!-- Showcase Card 1 -->
+      <div class="showcase-card hover-scale">
+        <div class="showcase-text">
+          <span class="step-num">Step 1</span>
+          <h3>List Surplus Food</h3>
+          <p>Donors like hotels, caterers, and supermarkets upload their surplus food details, packaging type, shelf-life, and location. Our automated system estimates safety margins and formats the pickup details.</p>
+          <a href="{% url 'donor-dashboard' %}" class="btn btn-primary hover-lift" style="align-self: flex-start; margin-top: 1.5rem; border-radius: 0.75rem; font-size: 0.9rem;">
+            List Food <i data-lucide="chevron-right"></i>
+          </a>
+        </div>
+        <div class="showcase-image">
+          <img src="{% static 'images/collection.jpeg' %}" alt="Food collection and listing">
+        </div>
+      </div>
+
+      <!-- Showcase Card 2 (Inverse) -->
+      <div class="showcase-card hover-scale inverse">
+        <div class="showcase-image">
+          <img src="{% static 'images/delivery.jpeg' %}" alt="Volunteer delivery logistics">
+        </div>
+        <div class="showcase-text">
+          <span class="step-num">Step 2</span>
+          <h3>Claim & Transport</h3>
+          <p>Local logistics volunteers receive push notifications for nearby listings. Integrated route optimization algorithms guide them to the donor for pickup and navigate them to the destination NGO.</p>
+          <a href="{% url 'volunteer' %}" class="btn btn-primary hover-lift" style="align-self: flex-start; margin-top: 1.5rem; border-radius: 0.75rem; font-size: 0.9rem;">
+            Claim Route <i data-lucide="chevron-right"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Showcase Card 3 -->
+      <div class="showcase-card hover-scale">
+        <div class="showcase-text">
+          <span class="step-num">Step 3</span>
+          <h3>Verified Distribution</h3>
+          <p>Registered NGOs confirm safe arrival, unpack, and serve the meals immediately to families in need. Weight, temperature, and delivery confirmation codes verify the closed-loop logistics chain.</p>
+          <a href="{% url 'ngo-dashboard' %}" class="btn btn-primary hover-lift" style="align-self: flex-start; margin-top: 1.5rem; border-radius: 0.75rem; font-size: 0.9rem;">
+            NGO Dashboard <i data-lucide="chevron-right"></i>
+          </a>
+        </div>
+        <div class="showcase-image">
+          <img src="{% static 'images/distribution.jpeg' %}" alt="Food distribution to community">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Strategic Footer Component -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand-block">
+        <a href="{% url 'home' %}" class="footer-logo">
+          <i data-lucide="heart" class="heart-icon"></i>
+          <span>FoodLink</span>
+        </a>
+        <p class="footer-mission-statement">
+          Eliminating food waste and ensuring food security across local communities through real-time donation matching and volunteer transport.
+        </p>
+        <div class="footer-social-row">
+          <a href="#" class="social-link-icon"><i data-lucide="twitter"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="facebook"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="instagram"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'about' %}">About Us</a>
+          <a href="{% url 'contact' %}">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          <a href="{% url 'volunteer' %}">Volunteer Portal</a>
+        </div>
+        <div class="footer-column">
+          <h4>Contact & Info</h4>
+          <div class="footer-info-text"><i data-lucide="mail"></i> info@foodlink.org</div>
+          <div class="footer-info-text"><i data-lucide="phone"></i> +91 80 4920 1234</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="bottom-bar-content">
+        <div>&copy; 2026 FoodLink Association. All rights reserved.</div>
+        <div class="fssai-compliance-tag">
+          <i data-lucide="shield-check"></i>
+          <span>FSSAI Compliant Operations</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lucide Script Initiation -->
+  <script>
+    lucide.createIcons();
+  </script>
+
+  <!-- Gemini Chat Widget -->
+  <style>
+    :root {
+      --chat-primary: #10b981;
+      --chat-primary-hover: #059669;
+      --chat-primary-gradient: linear-gradient(135deg, #10b981, #059669);
+      --chat-accent: #f97316;
+      --chat-bg: rgba(255, 255, 255, 0.9);
+      --chat-border: rgba(255, 255, 255, 0.4);
+      --chat-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      --chat-radius: 20px;
+    }
+
+    /* Toggle Button */
+    .gl-chat-toggle {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 9999;
+      background: var(--chat-primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .gl-chat-toggle:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5);
+    }
+    .gl-chat-toggle:active {
+      transform: scale(0.95);
+    }
+    .gl-chat-toggle .icon-close {
+      display: none;
+    }
+    .gl-chat-toggle.active {
+      background: #ef4444;
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+    }
+    .gl-chat-toggle.active:hover {
+      background: #dc2626;
+    }
+    .gl-chat-toggle.active .icon-msg {
+      display: none;
+    }
+    .gl-chat-toggle.active .icon-close {
+      display: block;
+    }
+
+    /* Chat Panel */
+    .gl-chat-panel {
+      position: fixed;
+      right: 24px;
+      bottom: 96px;
+      width: 380px;
+      max-width: calc(100% - 48px);
+      height: 560px;
+      background: var(--chat-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--chat-border);
+      border-radius: var(--chat-radius);
+      box-shadow: var(--chat-shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+    }
+    .gl-chat-panel.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+    }
+
+    /* Header */
+    .gl-chat-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #064e3b, #059669);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .gl-chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .gl-chat-status {
+      width: 8px;
+      height: 8px;
+      background: #34d399;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+    .gl-chat-header-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+      color: white;
+    }
+    .gl-chat-header-subtitle {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.75);
+      margin: 0;
+    }
+    .gl-close-btn {
+      background: transparent;
+      border: none;
+      color: white;
+      opacity: 0.8;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .gl-close-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    /* Body */
+    .gl-chat-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      background: radial-gradient(circle at top left, rgba(240, 253, 244, 0.5), rgba(255, 255, 255, 0.8));
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+    
+    /* Scrollbar */
+    .gl-chat-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .gl-chat-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .gl-chat-body::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    .gl-chat-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Message Bubbles */
+    .gl-msg {
+      display: flex;
+      gap: 10px;
+      max-width: 85%;
+      animation: msg-appear 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    @keyframes msg-appear {
+      from { opacity: 0; transform: translateY(10px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .gl-msg.assistant {
+      align-self: flex-start;
+    }
+    .gl-msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+      max-width: 80%;
+    }
+
+    .gl-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .gl-msg.assistant .gl-avatar {
+      background: #e6f7f0;
+      color: #059669;
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+    .gl-msg.user .gl-avatar {
+      background: #fdf2e9;
+      color: #f97316;
+      border: 1px solid rgba(249, 115, 22, 0.2);
+    }
+
+    .gl-msg .bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.925rem;
+      line-height: 1.5;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    
+    .gl-msg.assistant .bubble {
+      background: white;
+      color: #1e293b;
+      border-top-left-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .gl-msg.user .bubble {
+      background: var(--chat-primary-gradient);
+      color: white;
+      border-top-right-radius: 4px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    /* Suggestion Chips */
+    .gl-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      animation: msg-appear 0.4s ease forwards;
+    }
+    .gl-chip {
+      background: white;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #059669;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .gl-chip:hover {
+      background: #e6f7f0;
+      border-color: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.1);
+    }
+    .gl-chip:active {
+      transform: translateY(0);
+    }
+
+    /* Typing Indicator Animation */
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      padding: 4px 0;
+      align-items: center;
+    }
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: #94a3b8;
+      border-radius: 50%;
+      animation: typing-bounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes typing-bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
+    }
+
+    /* Input Footer */
+    .gl-chat-input-area {
+      padding: 16px;
+      background: white;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gl-chat-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .gl-chat-input-row textarea {
+      flex: 1;
+      resize: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      min-height: 42px;
+      max-height: 120px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+    }
+    .gl-chat-input-row textarea:focus {
+      border-color: var(--chat-primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    }
+    .gl-send-btn {
+      background: var(--chat-primary-gradient);
+      color: white;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+    }
+    .gl-send-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(16, 185, 129, 0.3);
+    }
+    .gl-send-btn:active {
+      transform: translateY(0);
+    }
+    .gl-send-btn:disabled {
+      background: #cbd5e1;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+
+  <div class="gl-chat-panel" id="glChatPanel" aria-hidden="true">
+    <div class="gl-chat-header">
+      <div class="gl-chat-header-info">
+        <span class="gl-chat-status"></span>
+        <div>
+          <h4 class="gl-chat-header-title">FoodLink Assistant</h4>
+          <p class="gl-chat-header-subtitle">Always online to assist you</p>
+        </div>
+      </div>
+      <button id="glCloseBtn" class="gl-close-btn" aria-label="Close chat">
+        <i data-lucide="x" style="width:20px;height:20px;"></i>
+      </button>
+    </div>
+    
+    <div class="gl-chat-body" id="glChatBody" role="log" aria-live="polite">
+      <!-- Welcome Message -->
+      <div class="gl-msg assistant">
+        <div class="gl-avatar">
+          <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+        </div>
+        <div class="bubble">
+          Hi! 👋 I'm your FoodLink Assistant. How can I help you support your community today?
+          <div class="gl-chips-container">
+            <button class="gl-chip" onclick="window.sendChatSuggestion('How does FoodLink work?')">
+              <i data-lucide="info" style="width:12px;height:12px;"></i> How does it work?
+            </button>
+            <button class="gl-chip" onclick="window.sendChatSuggestion('How to list food donation?')">
+              <i data-lucide="plus-circle" style="width:12px;height:12px;"></i> Donate surplus food
+            </button>
+            <button class="gl-chip" onclick="window.sendChatSuggestion('How can I volunteer to ride?')">
+              <i data-lucide="truck" style="width:12px;height:12px;"></i> Volunteer to transport
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="gl-chat-input-area">
+      <div class="gl-chat-input-row">
+        <textarea id="glChatInput" placeholder="Ask about donating, volunteering..." rows="1"></textarea>
+        <button id="glSendBtn" class="gl-send-btn" aria-label="Send message">
+          <i data-lucide="send" style="width:18px;height:18px;"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button class="gl-chat-toggle" id="glToggleBtn" aria-label="Open chat">
+    <i data-lucide="message-circle" class="icon-msg" style="width:26px;height:26px;"></i>
+    <i data-lucide="chevron-down" class="icon-close" style="width:26px;height:26px;"></i>
+  </button>
+
+  <script>
+  (function(){
+    const panel = document.getElementById('glChatPanel');
+    const toggle = document.getElementById('glToggleBtn');
+    const closeBtn = document.getElementById('glCloseBtn');
+    const body = document.getElementById('glChatBody');
+    const input = document.getElementById('glChatInput');
+    const send = document.getElementById('glSendBtn');
+
+    // Auto-resize input textarea
+    input.addEventListener('input', () => {
+      
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    });
+
+    // Custom formatting helper to support basic markdown bold and newlines
+    function formatMessageText(text) {
+      let escaped = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+      
+      escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      escaped = escaped.replace(/\n/g, '<br>');
+      return escaped;
+    }
+
+    function appendMessage(text, who='assistant', isTyping=false){
+      const msg = document.createElement('div');
+      msg.className = `gl-msg ${who}`;
+      
+      // Avatar setup
+      const avatar = document.createElement('div');
+      avatar.className = 'gl-avatar';
+      const icon = document.createElement('i');
+      if (who === 'assistant') {
+        icon.setAttribute('data-lucide', 'sparkles');
+      } else {
+        icon.setAttribute('data-lucide', 'user');
+      }
+      avatar.appendChild(icon);
+      msg.appendChild(avatar);
+
+      // Speech bubble setup
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      
+      if (isTyping) {
+        bubble.className = 'bubble typing-indicator-bubble';
+        bubble.innerHTML = `
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        `;
+      } else {
+        bubble.innerHTML = formatMessageText(text);
+      }
+      
+      msg.appendChild(bubble);
+      body.appendChild(msg);
+      body.scrollTop = body.scrollHeight;
+      lucide.createIcons();
+      return msg;
+    }
+
+    // Toggle Chat Panel visibility with animations
+    function toggleChat() {
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+        toggle.classList.remove('active');
+        panel.setAttribute('aria-hidden', 'true');
+      } else {
+        panel.classList.add('open');
+        toggle.classList.add('active');
+        panel.setAttribute('aria-hidden', 'false');
+        setTimeout(() => input.focus(), 300);
+      }
+    }
+
+    toggle.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', toggleChat);
+
+    // Send Message function
+    function sendMessage(textToSend) {
+      const text = textToSend || input.value.trim();
+      if(!text) return;
+      
+      // Reset input layout
+      if (!textToSend) {
+        input.value = '';
+        input.style.height = 'auto';
+      }
+      
+      appendMessage(text, 'user');
+      
+      // Disable sending while waiting for response
+      send.disabled = true;
+      
+      // Show typing indicator
+      const typingNode = appendMessage('', 'assistant', true);
+      
+      fetch('{% url "gemini_chat_api" %}', { 
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        }, 
+        body: JSON.stringify({message: text}) 
+      })
+        .then(async res => {
+          if(!res.ok) throw new Error(await res.text());
+          return res.json();
+        })
+        .then(data => {
+          typingNode.remove();
+          send.disabled = false;
+          appendMessage(data.reply || 'Sorry, I had trouble understanding that.');
+        })
+        .catch(err => {
+          typingNode.remove();
+          send.disabled = false;
+          appendMessage('Sorry, I encountered an error. Please try again later.');
+          console.error('Gemini chat error', err);
+        });
+    }
+
+    send.addEventListener('click', () => sendMessage());
+    input.addEventListener('keydown', (e)=>{ 
+      if(e.key === 'Enter' && !e.shiftKey){ 
+        e.preventDefault(); 
+        sendMessage(); 
+      }
+    });
+
+    // Expose chip clicks globally
+    window.sendChatSuggestion = function(text) {
+      sendMessage(text);
+    };
+
+    // Initialize lucide icons for the chat widget on load
+    lucide.createIcons();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us — FoodLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  
+  <style>
+    /* Modern Premium Aesthetic Overrides */
+    body {
+      background-color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .about-hero {
+      background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+      color: white;
+      padding: 6rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 3rem 3rem;
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .about-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .about-hero p {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title span {
+      background: linear-gradient(to right, #059669, #0284c7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Cause Section Layout */
+    .cause-section {
+      padding: 5rem 2rem;
+    }
+
+    .cause-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .cause-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .about-hero h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    .cause-content h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1.25rem;
+    }
+
+    .cause-content p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .stats-card-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-mini-card {
+      background: white;
+      padding: 2rem 1.5rem;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(15, 23, 42, 0.04);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-mini-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+    }
+
+    .stat-mini-card .number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #ef4444;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-mini-card.green .number {
+      color: #10b981;
+    }
+
+    .stat-mini-card p {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    /* Impact Section Layout */
+    .impact-section {
+      background: white;
+      padding: 6rem 2rem;
+      border-radius: 3rem;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.01);
+      margin: 2rem auto;
+    }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+
+    .impact-card {
+      padding: 2.5rem 2rem;
+      border-radius: 2rem;
+      background: #f8fafc;
+      border: 1px solid rgba(0,0,0,0.02);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .impact-card:hover {
+      transform: translateY(-8px);
+      background: white;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+      border-color: rgba(5, 150, 105, 0.1);
+    }
+
+    .impact-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 1.5rem auto;
+      border-radius: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: rgba(5, 150, 105, 0.08);
+      color: var(--primary);
+    }
+
+    .impact-card h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 0 0 0.5rem 0;
+    }
+
+    .impact-card p {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* Image Placeholder Slots Section */
+    .gallery-section {
+      padding: 5rem 2rem;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .image-placeholder-card {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      min-height: 250px;
+      border: 3px dashed #94a3b8;
+      color: #64748b;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .image-placeholder-card:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+    .image-placeholder-card i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .image-placeholder-card h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .image-placeholder-card p {
+      font-size: 0.85rem;
+      margin: 0;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo"><i data-lucide="heart" class="heart-icon"></i><span>FoodLink</span></a>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}" class="active-link">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if not user.is_authenticated or user.role == 'DONOR' %}
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'NGO' %}
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
+          <a href="{% url 'volunteer' %}">Volunteer</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Modern Hero Segment -->
+    <header class="about-hero">
+      <h1>Our Mission: Zero Waste, Zero Hunger</h1>
+      <p>Bridging the gap between local food surplus and community needs through real-time technology-led logistics.</p>
+    </header>
+
+    <!-- The Cause Segment (The Problem) -->
+    <section class="cause-section container">
+      <h2 class="section-title">The <span>Cause</span> We Support</h2>
+      <div class="cause-grid">
+        <div class="cause-content">
+          <h3>The Paradox of Surplus & Scarcity</h3>
+          <p>Every day, massive quantities of perfectly fresh, nutritious food are discarded by restaurants, wedding events, and caterers due to overproduction. At the exact same time, millions of families struggle to secure their next meal.</p>
+          <p>FoodLink was founded to dissolve this imbalance. We build the digital and physical pipelines required to capture surplus food at the source and deliver it securely to distribution agencies within its safe shelf-life.</p>
+        </div>
+        
+        <div class="stats-card-group">
+          <div class="stat-mini-card">
+            <div class="number">40%</div>
+            <p>Of Food is Wasted</p>
+          </div>
+          <div class="stat-mini-card green">
+            <div class="number">190M+</div>
+            <p>Undernourished People</p>
+          </div>
+          <div class="stat-mini-card green">
+            <div class="number">3x</div>
+            <p>Landfill Carbon Impact</p>
+          </div>
+          <div class="stat-mini-card">
+            <div class="number">1/3</div>
+            <p>Meals Never Eaten</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Impact Segment -->
+    <section class="impact-section container">
+      <h2 class="section-title">Our Platform <span>Impact</span></h2>
+      <div class="impact-grid">
+        
+        <!-- Meals Rescued -->
+        <div class="impact-card">
+          <div class="impact-icon-wrapper">
+            <i data-lucide="package"></i>
+          </div>
+          <h4>150K+</h4>
+          <p>Surplus Meals Rescued</p>
+        </div>
+
+        <!-- NGOs connected -->
+        <div class="impact-card">
+          <div class="impact-icon-wrapper">
+            <i data-lucide="heart"></i>
+          </div>
+          <h4>450+</h4>
+          <p>NGO Partners Connected</p>
+        </div>
+
+        <!-- Volunteer Transporters -->
+        <div class="impact-card">
+          <div class="impact-icon-wrapper">
+            <i data-lucide="truck"></i>
+          </div>
+          <h4>2,500+</h4>
+          <p>Active Volunteer Drivers</p>
+        </div>
+
+        <!-- Carbon Diverted -->
+        <div class="impact-card">
+          <div class="impact-icon-wrapper">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <h4>85k kg</h4>
+          <p>CO2 Landfill Diversion</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Image Placeholder Slots Section -->
+    <section class="gallery-section container">
+      <h2 class="section-title">Visualizing the <span>Journey</span></h2>
+      <div class="image-grid" style="margin-bottom: 3rem;">
+        
+        <div class="image-placeholder-card">
+          <i data-lucide="image"></i>
+          <h4>Primary Team & Operations</h4>
+          <p>Leave Space for Main Action Image (e.g. 800x600 px)</p>
+        </div>
+
+        <div class="image-placeholder-card">
+          <i data-lucide="image"></i>
+          <h4>Volunteer Logistics</h4>
+          <p>Space for Volunteer Image (e.g. 400x600 px)</p>
+        </div>
+
+        <div class="image-placeholder-card">
+          <i data-lucide="image"></i>
+          <h4>NGO Serving Food</h4>
+          <p>Space for NGO Image (e.g. 400x600 px)</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Strategic Footer Component -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand-block">
+        <a href="{% url 'home' %}" class="footer-logo">
+          <i data-lucide="heart" class="heart-icon"></i>
+          <span>FoodLink</span>
+        </a>
+        <p class="footer-mission-statement">
+          Eliminating food waste and ensuring food security across local communities through real-time donation matching and volunteer transport.
+        </p>
+        <div class="footer-social-row">
+          <a href="#" class="social-link-icon"><i data-lucide="twitter"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="facebook"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="instagram"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'about' %}">About Us</a>
+          <a href="{% url 'contact' %}">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          <a href="{% url 'volunteer' %}">Volunteer Portal</a>
+        </div>
+        <div class="footer-column">
+          <h4>Contact & Info</h4>
+          <div class="footer-info-text"><i data-lucide="mail"></i> info@foodlink.org</div>
+          <div class="footer-info-text"><i data-lucide="phone"></i> +91 80 4920 1234</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="bottom-bar-content">
+        <div>&copy; 2026 FoodLink Association. All rights reserved.</div>
+        <div class="fssai-compliance-tag">
+          <i data-lucide="shield-check"></i>
+          <span>FSSAI Compliant Operations</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

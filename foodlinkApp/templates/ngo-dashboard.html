@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Dashboard — FoodLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <style>
+    body {
+      background-color: #f8fafc;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 2s infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo"><i data-lucide="heart" class="heart-icon"></i><span>FoodLink</span></a>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if not user.is_authenticated or user.role == 'DONOR' %}
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'NGO' %}
+          <a href="{% url 'ngo-dashboard' %}" class="active-link">NGO Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
+          <a href="{% url 'volunteer' %}">Volunteer</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="container dashboard-layout">
+    <h2>Live Surplus Claims Feed</h2>
+    <div class="split-layout">
+      <aside class="sidebar-filter">
+        <h3>Filters</h3>
+        <input type="text" placeholder="Search city (e.g. Bengaluru)" style="margin-bottom: 1rem;">
+        <div class="filter-group">
+          <label style="display:block; margin-bottom: 0.5rem;"><input type="checkbox" checked> Cooked Meals</label>
+          <label style="display:block;"><input type="checkbox"> Raw Staples</label>
+        </div>
+      </aside>
+      
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <h3 style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em; margin: 0;">
+            <span class="live-dot"></span>
+            Live Donation Pipeline
+          </h3>
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); background: rgba(0,0,0,0.04); padding: 0.4rem 0.8rem; border-radius: 20px;">{{ donations|length }} Total Listings</span>
+        </div>
+
+        <div class="donation-pipeline-list">
+          {% for item in donations %}
+            <!-- Pipeline Row Card -->
+            <div class="pipeline-row-card" style="background: white; border-radius: 1.25rem; padding: 1.5rem 2rem; border: 1px solid rgba(15, 23, 42, 0.04); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;">
+              <div class="pipeline-main-info" style="display: flex; align-items: center; gap: 1.5rem; flex: 1; min-width: 250px;">
+                <div class="icon-indicator" style="width: 50px; height: 50px; background: rgba(5, 150, 105, 0.08); color: var(--primary); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+                  <i data-lucide="utensils"></i>
+                </div>
+                <div>
+                  <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); text-transform: capitalize; margin: 0;">{{ item.food_type }}</h4>
+                  <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0.25rem 0 0 0;">
+                    Quantity: <strong style="color: var(--text-dark);">{{ item.quantity_kg }} kg</strong> &nbsp;•&nbsp; 
+                    Broadcasted <span style="font-weight: 500; color: var(--text-dark);">{{ item.created_at|timesince }} ago</span>
+                  </p>
+                </div>
+              </div>
+              
+              <div class="pipeline-actions-status" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <span class="expiry-tag" style="display: flex; align-items: center; gap: 0.4rem; color: #ef4444; font-size: 0.85rem; font-weight: 700; background: rgba(239, 68, 68, 0.08); padding: 0.4rem 0.8rem; border-radius: 10px; height: fit-content;">
+                  <i data-lucide="hourglass" style="width: 14px; height: 14px;"></i> {{ item.expiry_hours }}
+                </span>
+                
+                <span class="status-tag" style="padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; height: fit-content;
+                  {% if item.status == 'LISTED' %}
+                    background: rgba(14, 165, 233, 0.12); color: #0284c7;
+                  {% elif item.status == 'ASSIGNED' %}
+                    background: rgba(245, 158, 11, 0.12); color: #d97706;
+                  {% else %}
+                    background: rgba(16, 185, 129, 0.12); color: #059669;
+                  {% endif %}">
+                  {{ item.get_status_display }}
+                </span>
+
+                {% if item.status == 'LISTED' %}
+                  <form method="POST" action="{% url 'accept-donation' item.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 700; border-radius: 0.75rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+                      <i data-lucide="check" style="width: 14px; height: 14px;"></i> Accept
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          {% empty %}
+            <!-- Empty State -->
+            <div class="empty-state-box" style="text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 1.5rem; border: 2px dashed rgba(15, 23, 42, 0.08); color: var(--text-muted); width: 100%;">
+              <i data-lucide="cloud-off" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1.25rem;"></i>
+              <p style="font-weight: 600; font-size: 1rem;">No active surplus donations listed on the local network.</p>
+              <p style="font-size: 0.85rem; margin-top: 0.25rem;">Check back later for real-time broadcasts.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Strategic Footer Component -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand-block">
+        <a href="{% url 'home' %}" class="footer-logo">
+          <i data-lucide="heart" class="heart-icon"></i>
+          <span>FoodLink</span>
+        </a>
+        <p class="footer-mission-statement">
+          Eliminating food waste and ensuring food security across local communities through real-time donation matching and volunteer transport.
+        </p>
+        <div class="footer-social-row">
+          <a href="#" class="social-link-icon"><i data-lucide="twitter"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="facebook"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="instagram"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'about' %}">About Us</a>
+          <a href="{% url 'contact' %}">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          <a href="{% url 'volunteer' %}">Volunteer Portal</a>
+        </div>
+        <div class="footer-column">
+          <h4>Contact & Info</h4>
+          <div class="footer-info-text"><i data-lucide="mail"></i> info@foodlink.org</div>
+          <div class="footer-info-text"><i data-lucide="phone"></i> +91 80 4920 1234</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="bottom-bar-content">
+        <div>&copy; 2026 FoodLink Association. All rights reserved.</div>
+        <div class="fssai-compliance-tag">
+          <i data-lucide="shield-check"></i>
+          <span>FSSAI Compliant Operations</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

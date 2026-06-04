@@ -1,0 +1,114 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Dashboard — FoodLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo"><i data-lucide="heart" class="heart-icon"></i><span>FoodLink</span></a>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if not user.is_authenticated or user.role == 'DONOR' %}
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'NGO' %}
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
+          <a href="{% url 'volunteer' %}" class="active-link">Volunteer</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="split-layout">
+      <div class="profile-card">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&fit=crop" class="avatar" alt="Avatar">
+        <h3>Rahul Sharma</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Level 8 Volunteer • Bengaluru</p>
+        <div class="badge-row">
+          <span class="v-badge">Elite Mover</span>
+          <span class="v-badge">City Hero</span>
+        </div>
+      </div>
+
+      <div class="active-task-box">
+        <h3>Active Logistics Pipeline</h3>
+        <div class="task-card">
+          <div class="step" style="margin-bottom: 1rem;"><i data-lucide="map-pin" style="color:var(--primary)"></i> <div><strong>Pickup:</strong> Udupi Grand (HSR Layout)</div></div>
+          <div class="step" style="margin-bottom: 1.5rem;"><i data-lucide="navigation" style="color:var(--secondary)"></i> <div><strong>Drop:</strong> Hope Shelter (Koramangala)</div></div>
+          <button class="btn btn-primary w-full" onclick="alert('Delivery completed. Points updated!')">Confirm Handover / Collected</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Strategic Footer Component -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand-block">
+        <a href="{% url 'home' %}" class="footer-logo">
+          <i data-lucide="heart" class="heart-icon"></i>
+          <span>FoodLink</span>
+        </a>
+        <p class="footer-mission-statement">
+          Eliminating food waste and ensuring food security across local communities through real-time donation matching and volunteer transport.
+        </p>
+        <div class="footer-social-row">
+          <a href="#" class="social-link-icon"><i data-lucide="twitter"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="facebook"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="instagram"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'about' %}">About Us</a>
+          <a href="{% url 'contact' %}">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          <a href="{% url 'volunteer' %}">Volunteer Portal</a>
+        </div>
+        <div class="footer-column">
+          <h4>Contact & Info</h4>
+          <div class="footer-info-text"><i data-lucide="mail"></i> info@foodlink.org</div>
+          <div class="footer-info-text"><i data-lucide="phone"></i> +91 80 4920 1234</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="bottom-bar-content">
+        <div>&copy; 2026 FoodLink Association. All rights reserved.</div>
+        <div class="fssai-compliance-tag">
+          <i data-lucide="shield-check"></i>
+          <span>FSSAI Compliant Operations</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

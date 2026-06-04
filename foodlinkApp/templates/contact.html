@@ -1,0 +1,266 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — FoodLink</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  
+  <style>
+    /* Prevent navbar overlaps and style hero section */
+    main {
+      padding-top: 80px;
+      background-color: var(--background);
+    }
+    
+    .contact-hero {
+      position: relative;
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      padding: 6rem 2rem;
+      text-align: center;
+      border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(5, 150, 105, 0.15);
+    }
+
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .contact-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .contact-hero p {
+      font-size: 1.25rem;
+      max-width: 650px;
+      margin: 0 auto;
+      opacity: 0.92;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .contact-hero .badge {
+      background: rgba(255, 255, 255, 0.18);
+      color: #34d399;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* Container Spacing fixes */
+    .contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    /* Info cards additional styling for green look */
+    .info-card {
+      border: 1px solid rgba(5, 150, 105, 0.08);
+      background: var(--surface);
+      border-left: 5px solid var(--primary);
+    }
+
+    .info-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 12px 25px rgba(5, 150, 105, 0.12);
+    }
+
+    /* Custom left space highlighting for user */
+    .user-custom-contact-space {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.03), rgba(16, 185, 129, 0.05));
+      border: 2px dashed var(--primary);
+    }
+
+    .user-custom-contact-space h4 {
+      color: var(--primary);
+    }
+
+    /* Form wrappers */
+    .form-wrapper {
+      border-top: 5px solid var(--primary);
+    }
+
+    /* Alert fixes */
+    .success-alert-banner {
+      max-width: 1200px;
+      margin: 3rem auto -1rem auto;
+      border-left: 5px solid var(--primary);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      animation: slideUp 0.6s var(--ease-smooth) forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="nav-logo"><i data-lucide="heart" class="heart-icon"></i><span>FoodLink</span></a>
+      <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}" class="active-link">Contact</a>
+        {% if not user.is_authenticated or user.role == 'DONOR' %}
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'NGO' %}
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+        {% endif %}
+        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
+          <a href="{% url 'volunteer' %}">Volunteer</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Beautiful Contact Hero Header with original green palette -->
+    <div class="contact-hero animate-fade-in">
+      <span class="badge">GET IN TOUCH</span>
+      <h1>Connect with FoodLink</h1>
+      <p>Partner with us, reach our direct support desk, or volunteer to make an immediate impact on hunger and food waste.</p>
+    </div>
+
+    {% if success %}
+      <div class="success-alert-banner animate-slide-up">
+        <i data-lucide="check-circle" class="success-icon"></i>
+        <div>
+          <h4>Message Sent Successfully!</h4>
+          <p>Thank you for reaching out. Our team will review your message and get back to you shortly.</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="contact-container animate-slide-up">
+      <div class="split-layout">
+        <div>
+          <h2 class="section-title" style="margin-top: 0;">We're here to Collaborate</h2>
+          <p class="section-desc">Whether you want to donate food, register your NGO, or volunteer, our team is ready to assist you.</p>
+          
+          <div class="contact-box">
+            <div class="info-card">
+              <i data-lucide="map-pin"></i>
+              <div>
+                <h4>Headquarters</h4>
+                <p>##</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <i data-lucide="phone"></i>
+              <div>
+                <h4>Direct Support</h4>
+                <p>##</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- LEAVE SPACE FOR CUSTOM CONTACT & ADDRESS DETAILS (User will add later) -->
+          <div class="user-custom-contact-space animate-slide-up delay-2">
+            <h4><i data-lucide="info" style="width: 18px; height: 18px; display: inline-block;"></i> Additional Info Space</h4>
+            <p><em>[Space reserved for additional branch addresses, custom directions, landline phone numbers, operating hours, or other custom HTML details to be added later.]</em></p>
+          </div>
+        </div>
+
+        <div class="form-wrapper">
+          <h3>Send a Message</h3>
+          <form class="styled-form" method="POST" action=".">
+            {% csrf_token %}
+            <div class="form-row">
+              <input type="text" name="name" placeholder="Full Name" required>
+              <input type="email" name="email" placeholder="Email Address" required>
+            </div>
+            <select name="partner_type" required>
+              <option value="" disabled selected>Select Partnership Type</option>
+              <option value="Restaurant Partner">Restaurant Partner</option>
+              <option value="NGO Partner">NGO Partner</option>
+              <option value="Individual Volunteer">Individual Volunteer</option>
+              <option value="Other">Other Query</option>
+            </select>
+            <textarea name="message" rows="5" placeholder="How can we help you?" required></textarea>
+            <button type="submit" class="btn btn-primary w-full">Send Message <i data-lucide="send"></i></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Strategic Footer Component -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand-block">
+        <a href="{% url 'home' %}" class="footer-logo">
+          <i data-lucide="heart" class="heart-icon"></i>
+          <span>FoodLink</span>
+        </a>
+        <p class="footer-mission-statement">
+          Eliminating food waste and ensuring food security across local communities through real-time donation matching and volunteer transport.
+        </p>
+        <div class="footer-social-row">
+          <a href="#" class="social-link-icon"><i data-lucide="twitter"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="facebook"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="instagram"></i></a>
+          <a href="#" class="social-link-icon"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-grid">
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'about' %}">About Us</a>
+          <a href="{% url 'contact' %}">Contact</a>
+        </div>
+        <div class="footer-column">
+          <h4>Portals</h4>
+          <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          <a href="{% url 'volunteer' %}">Volunteer Portal</a>
+        </div>
+        <div class="footer-column">
+          <h4>Contact & Info</h4>
+          <div class="footer-info-text"><i data-lucide="mail"></i> info@foodlink.org</div>
+          <div class="footer-info-text"><i data-lucide="phone"></i> +91 80 4920 1234</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom-bar">
+      <div class="bottom-bar-content">
+        <div>&copy; 2026 FoodLink Association. All rights reserved.</div>
+        <div class="fssai-compliance-tag">
+          <i data-lucide="shield-check"></i>
+          <span>FSSAI Compliant Operations</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>
