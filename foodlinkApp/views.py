@@ -54,14 +54,14 @@ def login_view(request):
             login(request, user)
             
             # Redirect to the appropriate portal depending on user role
-            if user.role == 'DONOR':
+            if user.is_superuser or user.role == 'ADMIN':
+                return redirect('master-admin')
+            elif user.role == 'DONOR':
                 return redirect('donor-dashboard')
             elif user.role == 'NGO':
                 return redirect('ngo-dashboard')
             elif user.role == 'VOLUNTEER':
                 return redirect('volunteer')
-            elif user.role == 'ADMIN':
-                return redirect('master-admin')
         else:
             return render(request, 'login.html', {'error': 'Invalid email/username or password.'})
 
