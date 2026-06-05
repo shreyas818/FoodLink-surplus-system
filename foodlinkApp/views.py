@@ -201,8 +201,8 @@ def volunteer_dashboard_view(request):
 from django.http import HttpResponseForbidden
 
 def master_admin_view(request):
-    # Security Guard: Block any user who isn't a logged-in Django Superuser
-    if not request.user.is_authenticated or not request.user.is_superuser:
+    # Security Guard: Block any user who isn't a logged-in Django Superuser or Admin role
+    if not request.user.is_authenticated or not (request.user.is_superuser or getattr(request.user, 'role', None) == 'ADMIN'):
         return HttpResponseForbidden("Access Denied: This control center is restricted to platform administrators.")
 
     # Gather global cross-platform datasets
@@ -229,7 +229,7 @@ def master_admin_view(request):
 
 
 def delete_message_view(request, message_id):
-    if not request.user.is_authenticated or not request.user.is_superuser:
+    if not request.user.is_authenticated or not (request.user.is_superuser or getattr(request.user, 'role', None) == 'ADMIN'):
         return HttpResponseForbidden("Access Denied: You do not have permission to perform this action.")
     
     if request.method == 'POST':

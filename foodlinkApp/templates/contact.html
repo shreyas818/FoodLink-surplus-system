@@ -131,13 +131,19 @@
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'about' %}">About</a>
         <a href="{% url 'contact' %}" class="active-link">Contact</a>
-        {% if not user.is_authenticated or user.role == 'DONOR' %}
+        {% if user.is_authenticated %}
+          {% if user.is_superuser or user.role == 'ADMIN' %}
+            <a href="{% url 'master-admin' %}">Admin Portal</a>
+          {% elif user.role == 'DONOR' %}
+            <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+          {% elif user.role == 'NGO' %}
+            <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+          {% elif user.role == 'VOLUNTEER' %}
+            <a href="{% url 'volunteer' %}">Volunteer</a>
+          {% endif %}
+        {% else %}
           <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
-        {% endif %}
-        {% if not user.is_authenticated or user.role == 'NGO' %}
           <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
-        {% endif %}
-        {% if not user.is_authenticated or user.role == 'VOLUNTEER' %}
           <a href="{% url 'volunteer' %}">Volunteer</a>
         {% endif %}
         {% if user.is_authenticated %}

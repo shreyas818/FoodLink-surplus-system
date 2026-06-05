@@ -19,7 +19,13 @@
         <span></span>
       </label>
       
-      <div class="nav-links"><a href="{% url 'home' %}" style="color: #94a3b8;">Exit System</a></div>
+      <div class="nav-links">
+        <a href="{% url 'home' %}" style="color: #94a3b8;">Home</a>
+        <a href="{% url 'about' %}" style="color: #94a3b8;">About</a>
+        <a href="{% url 'contact' %}" style="color: #94a3b8;">Contact</a>
+        <a href="{% url 'master-admin' %}" class="active-link" style="color: white; font-weight: 700;">Admin Portal</a>
+        <a href="{% url 'logout' %}" class="btn-login" style="background: var(--secondary) !important;">Logout</a>
+      </div>
     </div>
   </nav>
 

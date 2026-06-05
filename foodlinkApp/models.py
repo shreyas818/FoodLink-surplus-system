@@ -19,7 +19,6 @@ class FoodDonation(models.Model):
     
 from django.contrib.auth.models import AbstractUser
 
-#=====Model for user login=====
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
         ('DONOR', 'Donor'),
@@ -28,6 +27,11 @@ class CustomUser(AbstractUser):
         ('ADMIN', 'Admin'),
     ]
     role = models.CharField(max_length=50, choices=ROLE_CHOICES, default='DONOR')
+
+    def save(self, *args, **kwargs):
+        if (self.is_superuser or self.is_staff) and self.role != 'ADMIN':
+            self.role = 'ADMIN'
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.username} ({self.role})"
