@@ -208,6 +208,7 @@ def master_admin_view(request):
     # Gather global cross-platform datasets
     all_donations = FoodDonation.objects.all().order_by('-created_at')
     contact_messages = ContactMessage.objects.all().order_by('-created_at')
+    all_users = CustomUser.objects.all().order_by('-date_joined')
     
     # Calculate global platform performance statistics
     total_listings = all_donations.count()
@@ -216,14 +217,26 @@ def master_admin_view(request):
     
     total_weight = all_donations.aggregate(Sum('quantity_kg'))['quantity_kg__sum'] or 0
     total_messages = contact_messages.count()
+    
+    total_users = all_users.count()
+    total_admins = all_users.filter(role='ADMIN').count()
+    total_donors = all_users.filter(role='DONOR').count()
+    total_ngos = all_users.filter(role='NGO').count()
+    total_volunteers = all_users.filter(role='VOLUNTEER').count()
 
     context = {
         'donations': all_donations,
         'contact_messages': contact_messages,
+        'users': all_users,
         'total_listings': total_listings,
         'total_claimed': total_claimed,
         'total_weight': f"{total_weight} kg",
         'total_messages': total_messages,
+        'total_users': total_users,
+        'total_admins': total_admins,
+        'total_donors': total_donors,
+        'total_ngos': total_ngos,
+        'total_volunteers': total_volunteers,
     }
     return render(request, 'master-admin.html', context)
 
@@ -237,6 +250,61 @@ def delete_message_view(request, message_id):
             msg = ContactMessage.objects.get(id=message_id)
             msg.delete()
         except ContactMessage.DoesNotExist:
+            pass
+    return redirect('master-admin')
+
+
+def toggle_user_status_view(request, user_id):
+    if not request.user.is_authenticated or not (request.user.is_superuser or getattr(request.user, 'role', None) == 'ADMIN'):
+        return HttpResponseForbidden("Access Denied: You do not have permission to perform this action.")
+    if request.method == 'POST':
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            if user == request.user:
+                # Can't deactivate yourself
+                pass
+            else:
+                user.is_active = not user.is_active
+                user.save()
+        except CustomUser.DoesNotExist:
+            pass
+    return redirect('master-admin')
+
+
+def delete_user_view(request, user_id):
+    if not request.user.is_authenticated or not (request.user.is_superuser or getattr(request.user, 'role', None) == 'ADMIN'):
+        return HttpResponseForbidden("Access Denied: You do not have permission to perform this action.")
+    if request.method == 'POST':
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            if user == request.user:
+                # Can't delete yourself
+                pass
+            else:
+                user.delete()
+        except CustomUser.DoesNotExist:
+            pass
+    return redirect('master-admin')
+
+
+def change_user_role_view(request, user_id):
+    if not request.user.is_authenticated or not (request.user.is_superuser or getattr(request.user, 'role', None) == 'ADMIN'):
+        return HttpResponseForbidden("Access Denied: You do not have permission to perform this action.")
+    if request.method == 'POST':
+        try:
+            user = CustomUser.objects.get(id=user_id)
+            new_role = request.POST.get('role')
+            if new_role in ['DONOR', 'NGO', 'VOLUNTEER', 'ADMIN']:
+                user.role = new_role
+                if new_role == 'ADMIN':
+                    user.is_staff = True
+                else:
+                    if user.is_superuser:
+                        user.role = 'ADMIN'  # Keep ADMIN for superuser
+                    else:
+                        user.is_staff = False
+                user.save()
+        except CustomUser.DoesNotExist:
             pass
     return redirect('master-admin')
 
