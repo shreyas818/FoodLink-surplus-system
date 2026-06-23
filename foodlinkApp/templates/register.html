@@ -36,6 +36,9 @@
         {% if user.is_authenticated %}
           {% if user.is_superuser or user.role == 'ADMIN' %}
             <a href="{% url 'master-admin' %}">Admin Portal</a>
+            <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
+            <a href="{% url 'ngo-dashboard' %}">NGO Portal</a>
+            <a href="{% url 'volunteer' %}">Volunteer</a>
           {% elif user.role == 'DONOR' %}
             <a href="{% url 'donor-dashboard' %}">Donor Portal</a>
           {% elif user.role == 'NGO' %}
