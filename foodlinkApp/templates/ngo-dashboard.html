@@ -5,12 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NGO Dashboard — FoodLink</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="stylesheet" href="{% static 'style.css' %}">
   <style>
     body {
       background-color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
     @keyframes pulse {
@@ -27,10 +28,24 @@
       background: #10b981;
       animation: pulse 2s infinite;
     }
+
+    /* Modern Layout Override */
+    @media (min-width: 992px) {
+      .dashboard-layout .split-layout {
+        grid-template-columns: 300px 1fr;
+        gap: 2.5rem;
+      }
+    }
+
+    /* Typography customization */
+    .dash-title, .section-subtitle {
+      font-family: 'Outfit', sans-serif;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Navigation Header Component -->
   <nav class="navbar">
     <div class="nav-container">
       <a href="{% url 'home' %}" class="nav-logo"><i data-lucide="heart" class="heart-icon"></i><span>FoodLink</span></a>
@@ -73,34 +88,144 @@
     </div>
   </nav>
 
-  <main class="container dashboard-layout">
-    <h2>Live Surplus Claims Feed</h2>
-    <div class="split-layout">
-      <aside class="sidebar-filter">
-        <h3>Filters</h3>
-        <input type="text" placeholder="Search city (e.g. Bengaluru)" style="margin-bottom: 1rem;">
-        <div class="filter-group">
-          <label style="display:block; margin-bottom: 0.5rem;"><input type="checkbox" checked> Cooked Meals</label>
-          <label style="display:block;"><input type="checkbox"> Raw Staples</label>
-        </div>
-      </aside>
+  <!-- Main Content Dashboard Container -->
+  <main class="container dashboard-layout" style="padding-top: 100px;">
+    
+    <!-- Dashboard Heading and Live Status -->
+    <div class="dash-header animate-fade-in" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 class="dash-title" style="font-size: 2.25rem; font-weight: 800; color: var(--text-dark); letter-spacing: -0.03em; margin: 0;">Welcome, NGO Partner!</h2>
+        <p class="sub-text" style="font-size: 0.95rem; font-weight: 600; color: var(--text-muted); margin-top: 0.25rem; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0;">
+          <span class="live-dot"></span>
+          {{ ngo_name }} — Portal for routing and claiming food supplies
+        </p>
+      </div>
       
-      <div style="flex: 1;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-          <h3 style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em; margin: 0;">
-            <span class="live-dot"></span>
-            Live Donation Pipeline
-          </h3>
-          <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); background: rgba(0,0,0,0.04); padding: 0.4rem 0.8rem; border-radius: 20px;">{{ donations|length }} Total Listings</span>
+      <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary); background: rgba(5, 150, 105, 0.08); padding: 0.5rem 1rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.35rem;">
+        <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i> Verified Partner
+      </span>
+    </div>
+
+    <!-- Beautiful Dashboard Stats Cards Grid -->
+    <div class="stats-grid animate-slide-up" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3.5rem;">
+      
+      <!-- Active Volunteers Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid var(--primary); background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper p-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #ecfdf5; color: var(--primary);">
+          <i data-lucide="users"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Active Volunteers</h4>
+          <p style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin: 0;">{{ active_volunteers }}</p>
+        </div>
+      </div>
+
+      <!-- Coverage Area Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid var(--secondary); background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper s-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #fff7ed; color: var(--secondary);">
+          <i data-lucide="map-pin"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Coverage Area</h4>
+          <p style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;" title="{{ region }}">{{ region }}</p>
+        </div>
+      </div>
+
+      <!-- Available Listings Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid #3b82f6; background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper b-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #eff6ff; color: #3b82f6;">
+          <i data-lucide="package"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Available Listings</h4>
+          <p id="totalListingsStat" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin: 0;">{{ donations|length }}</p>
+        </div>
+      </div>
+
+      <!-- Network Status Card -->
+      <div class="stat-card hover-lift" style="border-left: 4px solid #10b981; background: #ffffff; padding: 1.5rem 1.75rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02); display: flex; align-items: center; gap: 1.25rem;">
+        <div class="stat-icon-wrapper g-bg" style="width: 50px; height: 50px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; background: #f0fdf4; color: #10b981;">
+          <i data-lucide="activity"></i>
+        </div>
+        <div>
+          <h4 style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem; font-family: 'Outfit';">Network Status</h4>
+          <p style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark); margin: 0;">Active Hub</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Main Content Split Layout -->
+    <div class="split-layout animate-slide-up">
+      <!-- Filter Sidebar (Interactive) -->
+      <aside class="sidebar-filter" style="background: white; border-radius: 1.25rem; padding: 2rem; border: 1px solid rgba(15, 23, 42, 0.06); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); display: flex; flex-direction: column; gap: 1.5rem;">
+        <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid rgba(0, 0, 0, 0.05); padding-bottom: 0.75rem; margin: 0;">
+          <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px; color: var(--primary);"></i>
+          Pipeline Filters
+        </h3>
+        
+        <div>
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;">Search Donations</label>
+          <div style="position: relative;">
+            <i data-lucide="search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+            <input type="text" id="citySearchInput" placeholder="Search food items..." style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.25rem; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; border-radius: 0.75rem; font-size: 0.9rem; outline: none; transition: var(--transition-smooth);" onfocus="this.style.borderColor='var(--primary)'; this.style.background='#ffffff'; this.style.boxShadow='0 0 0 3px rgba(5,150,105,0.1)';" onblur="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.background='#f8fafc'; this.style.boxShadow='none';" onkeyup="filterDonations()">
+          </div>
         </div>
 
-        <div class="donation-pipeline-list">
+        <div>
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.75rem;">Category</label>
+          <div class="filter-group" style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--text-dark)'" onmouseout="this.style.color='var(--text-muted)'">
+              <input type="checkbox" id="filterCooked" checked style="accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer;" onchange="filterDonations()"> Cooked Meals
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--text-dark)'" onmouseout="this.style.color='var(--text-muted)'">
+              <input type="checkbox" id="filterRaw" checked style="accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer;" onchange="filterDonations()"> Raw / Staples
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.75rem;">Status</label>
+          <div style="position: relative;">
+            <select id="statusFilter" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid rgba(0,0,0,0.08); background: #f8fafc; border-radius: 0.75rem; font-size: 0.9rem; outline: none; transition: var(--transition-smooth); cursor: pointer; -webkit-appearance: none; appearance: none;" onfocus="this.style.borderColor='var(--primary)'; this.style.background='#ffffff';" onblur="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.background='#f8fafc';" onchange="filterDonations()">
+              <option value="ALL">All Statuses</option>
+              <option value="LISTED">Listed (Available)</option>
+              <option value="ASSIGNED">Assigned (NGO Claimed)</option>
+              <option value="PICKED_UP">Picked Up</option>
+              <option value="DELIVERED">Reached Destination</option>
+            </select>
+            <i data-lucide="chevron-down" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none;"></i>
+          </div>
+        </div>
+
+        <button onclick="resetFilters()" style="background: transparent; border: 1px solid rgba(0,0,0,0.08); border-radius: 0.75rem; padding: 0.75rem; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; gap: 0.4rem;" onmouseover="this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'; this.style.background='rgba(5, 150, 105, 0.02)';" onmouseout="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.color='var(--text-muted)'; this.style.background='transparent';">
+          <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Reset Filters
+        </button>
+      </aside>
+      
+      <!-- Donations Feed List -->
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <h3 class="section-subtitle" style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em; margin: 0;">
+            <span class="live-dot"></span>
+            Surplus Claims Pipeline
+          </h3>
+          <span id="pipelineCountBadge" style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); background: rgba(0,0,0,0.04); padding: 0.4rem 0.8rem; border-radius: 20px;">{{ donations|length }} Total Listings</span>
+        </div>
+
+        <div class="donation-pipeline-list" id="donationPipelineList">
           {% for item in donations %}
             <!-- Pipeline Row Card -->
-            <div class="pipeline-row-card" style="background: white; border-radius: 1.25rem; padding: 1.5rem 2rem; border: 1px solid rgba(15, 23, 42, 0.04); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; gap: 1rem; flex-wrap: wrap;">
+            <div class="pipeline-row-card hover-lift" data-status="{{ item.status }}" style="background: white; border-radius: 1.25rem; padding: 1.5rem 2rem; border: 1px solid rgba(15, 23, 42, 0.04); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01); display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; gap: 1.5rem; flex-wrap: wrap;">
+              
+              <!-- Left Content: Icon indicator & info -->
               <div class="pipeline-main-info" style="display: flex; align-items: center; gap: 1.5rem; flex: 1; min-width: 250px;">
-                <div class="icon-indicator" style="width: 50px; height: 50px; background: rgba(5, 150, 105, 0.08); color: var(--primary); border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
-                  <i data-lucide="utensils"></i>
+                <div class="icon-indicator" style="width: 50px; height: 50px; background: {% if 'raw' in item.food_type|lower or 'staple' in item.food_type|lower or 'bag' in item.food_type|lower or 'wheat' in item.food_type|lower or 'flour' in item.food_type|lower or 'grain' in item.food_type|lower %}rgba(249, 115, 22, 0.08){% else %}rgba(5, 150, 105, 0.08){% endif %}; color: {% if 'raw' in item.food_type|lower or 'staple' in item.food_type|lower or 'bag' in item.food_type|lower or 'wheat' in item.food_type|lower or 'flour' in item.food_type|lower or 'grain' in item.food_type|lower %}var(--secondary){% else %}var(--primary){% endif %}; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;">
+                  {% if 'raw' in item.food_type|lower or 'staple' in item.food_type|lower or 'bag' in item.food_type|lower or 'wheat' in item.food_type|lower or 'flour' in item.food_type|lower or 'grain' in item.food_type|lower %}
+                    <i data-lucide="package"></i>
+                  {% else %}
+                    <i data-lucide="utensils"></i>
+                  {% endif %}
                 </div>
                 <div>
                   <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); text-transform: capitalize; margin: 0;">{{ item.food_type }}</h4>
@@ -111,8 +236,9 @@
                 </div>
               </div>
               
+              <!-- Right Content: Expiry, Status & Accept Action -->
               <div class="pipeline-actions-status" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                <span class="expiry-tag" style="display: flex; align-items: center; gap: 0.4rem; color: #ef4444; font-size: 0.85rem; font-weight: 700; background: rgba(239, 68, 68, 0.08); padding: 0.4rem 0.8rem; border-radius: 10px; height: fit-content;">
+                <span class="expiry-tag" style="display: flex; align-items: center; gap: 0.4rem; color: #ef4444; font-size: 0.85rem; font-weight: 700; background: rgba(239, 68, 68, 0.08); padding: 0.4rem 0.8rem; border-radius: 10px; height: fit-content; border: 1px solid rgba(239, 68, 68, 0.1);">
                   <i data-lucide="hourglass" style="width: 14px; height: 14px;"></i> {{ item.expiry_hours }}
                 </span>
                 
@@ -130,8 +256,8 @@
                 {% if item.status == 'LISTED' %}
                   <form method="POST" action="{% url 'accept-donation' item.id %}" style="margin: 0;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 700; border-radius: 0.75rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
-                      <i data-lucide="check" style="width: 14px; height: 14px;"></i> Accept
+                    <button type="submit" class="btn btn-primary hover-lift" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; font-weight: 700; border-radius: 0.75rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.15);">
+                      <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i> Claim
                     </button>
                   </form>
                 {% endif %}
@@ -139,12 +265,19 @@
             </div>
           {% empty %}
             <!-- Empty State -->
-            <div class="empty-state-box" style="text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 1.5rem; border: 2px dashed rgba(15, 23, 42, 0.08); color: var(--text-muted); width: 100%;">
+            <div id="emptyStateBox" class="empty-state-box" style="text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 1.5rem; border: 2px dashed rgba(15, 23, 42, 0.08); color: var(--text-muted); width: 100%;">
               <i data-lucide="cloud-off" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1.25rem;"></i>
-              <p style="font-weight: 600; font-size: 1rem;">No active surplus donations listed on the local network.</p>
-              <p style="font-size: 0.85rem; margin-top: 0.25rem;">Check back later for real-time broadcasts.</p>
+              <p style="font-weight: 600; font-size: 1.1rem; color: var(--text-dark);">No active surplus donations listed.</p>
+              <p style="font-size: 0.875rem; margin-top: 0.25rem;">Check back later for real-time local network broadcasts.</p>
             </div>
           {% endfor %}
+          
+          <!-- Client-side filter empty state placeholder -->
+          <div id="filterEmptyStateBox" class="empty-state-box" style="display: none; text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 1.5rem; border: 2px dashed rgba(15, 23, 42, 0.08); color: var(--text-muted); width: 100%;">
+            <i data-lucide="filter-x" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1.25rem;"></i>
+            <p style="font-weight: 600; font-size: 1.1rem; color: var(--text-dark);">No matching listings found.</p>
+            <p style="font-size: 0.875rem; margin-top: 0.25rem;">Try adjusting your filter keyword or checkboxes.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -199,6 +332,64 @@
     </div>
   </footer>
 
-  <script>lucide.createIcons();</script>
+  <script>
+    lucide.createIcons();
+
+    function filterDonations() {
+      const searchVal = document.getElementById('citySearchInput').value.toLowerCase();
+      const showCooked = document.getElementById('filterCooked').checked;
+      const showRaw = document.getElementById('filterRaw').checked;
+      const statusVal = document.getElementById('statusFilter').value;
+
+      const cards = document.querySelectorAll('.pipeline-row-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const title = card.querySelector('h4').textContent.toLowerCase();
+        const infoText = card.textContent.toLowerCase();
+        const status = card.getAttribute('data-status');
+        
+        // Dynamic detection of category (Cooked vs Raw/Staples)
+        const hasRawKeywords = title.includes('raw') || title.includes('staple') || title.includes('bag') || title.includes('wheat') || title.includes('flour') || title.includes('grain');
+        const isCooked = !hasRawKeywords;
+        const isRaw = hasRawKeywords;
+
+        const matchesSearch = title.includes(searchVal) || infoText.includes(searchVal);
+        const matchesStatus = (statusVal === 'ALL' || status === statusVal);
+        const matchesCategory = (showCooked && isCooked) || (showRaw && isRaw);
+
+        if (matchesSearch && matchesStatus && matchesCategory) {
+          card.style.setProperty('display', 'flex', 'important');
+          visibleCount++;
+        } else {
+          card.style.setProperty('display', 'none', 'important');
+        }
+      });
+
+      // Update total listings text badge dynamically
+      const totalBadge = document.getElementById('pipelineCountBadge');
+      if (totalBadge) {
+        totalBadge.textContent = `${visibleCount} Matching Listing${visibleCount !== 1 ? 's' : ''}`;
+      }
+
+      // Toggle dynamic search empty state
+      const filterEmptyBox = document.getElementById('filterEmptyStateBox');
+      if (cards.length > 0) {
+        if (visibleCount === 0) {
+          if (filterEmptyBox) filterEmptyBox.style.setProperty('display', 'block', 'important');
+        } else {
+          if (filterEmptyBox) filterEmptyBox.style.setProperty('display', 'none', 'important');
+        }
+      }
+    }
+
+    function resetFilters() {
+      document.getElementById('citySearchInput').value = '';
+      document.getElementById('filterCooked').checked = true;
+      document.getElementById('filterRaw').checked = true;
+      document.getElementById('statusFilter').value = 'ALL';
+      filterDonations();
+    }
+  </script>
 </body>
 </html>
