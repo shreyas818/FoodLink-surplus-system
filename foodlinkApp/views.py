@@ -196,7 +196,11 @@ def accept_donation_view(request, donation_id):
 
 @role_required(['VOLUNTEER'])
 def volunteer_dashboard_view(request):
-    return render(request, 'volunteer.html')
+    donations = FoodDonation.objects.all().order_by('-created_at')
+    context = {
+        'donations': donations,
+    }
+    return render(request, 'volunteer.html', context)
 
 #========================================================
 
